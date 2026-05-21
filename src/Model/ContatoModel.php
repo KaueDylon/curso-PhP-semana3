@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Model;
 class ContatoModel{
     public function __construct(
         private int $id,

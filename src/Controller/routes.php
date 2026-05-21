@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 namespace App\Controller;
-header('Content-Type: application/json; charset=utf8');
 
-$
+use App\Controller\ContatoController;
 
-$router->get('/api/tarefas', function (): string {
-    return "oi";
-});
+/** @var Router $router */
+// ROTA DE CONTATOS ::
 
-$router->dispatch();
+$router->get('/usuario', [ContatoController::class, 'usuario']);
