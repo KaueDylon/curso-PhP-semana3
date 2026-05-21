@@ -9,3 +9,4 @@ use App\Controller\ContatoController;
 // ROTA DE CONTATOS ::
 
 $router->get('/usuario', [ContatoController::class, 'usuario']);
+$router->post('/usuario', [ContatoController::class, 'inserirUsuario']);

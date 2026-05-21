@@ -7,22 +7,21 @@ namespace App\Http;
 class Router{
     private array $routes = [];
 
-    public function get(string $path, callable $handler): void{
+    public function get(string $path, array|callable $handler): void{
         $this->routes['GET'][$path] = $handler;
     }
 
-    public function post(string $path, callable $handler): void{
+    public function post(string $path, array|callable $handler): void{
         $this->routes['POST'][$path] = $handler;
     }
 
-    public function put(string $path, callable $handler): void{
+    public function put(string $path, array|callable $handler): void{
         $this->routes['PUT'][$path] = $handler;
     }
 
-    public function delete(string $path, callable $handler): void{
+    public function delete(string $path, array|callable $handler): void{
         $this->routes['DELETE'][$path] = $handler;
     }
-
 
     public function dispatch(): void
     {
@@ -33,13 +32,20 @@ class Router{
             $pattern = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', $route);
             if (preg_match("#^{$pattern}$#", $path, $matches)) {
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
-                echo json_encode($handler($params), JSON_THROW_ON_ERROR);
+                if (is_array($handler)) {
+                    [$class, $method] = $handler;
+                    $controller = new $class();
+                    echo json_encode($controller->$method($params, $body), JSON_THROW_ON_ERROR);
+                } else {
+                    echo json_encode($handler($params, $body), JSON_THROW_ON_ERROR);
+                }
                 return;
             }
-
-            http_response_code(404);
-            echo json_encode(['erro' => 'Rota não encontrada']);
         }
+
+        http_response_code(404);
+        echo json_encode(['erro' => 'Rota não encontrada']);
     }
 }

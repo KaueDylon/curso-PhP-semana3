@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Config\Database;
+use App\Model\CriarContatoModel;
 use PDO;
 
 class ContatoRepository
@@ -18,6 +19,19 @@ class ContatoRepository
     {
         $stmt = $this->PDO->query('SELECT * FROM contatos');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function adicionarNovoContato(CriarContatoModel $contato)
+    {
+        $stmt = $this->PDO->prepare(
+            "INSERT INTO contatos (nome, email, telefone) 
+                    VALUES (:nome, :email, :senha)");
+        $stmt->execute([
+            ':nome' => $contato->getNome(),
+            ':email' => $contato->getEmail(),
+            ':senha' => $contato->getTelefone(),
+
+        ]);
     }
 
 }
