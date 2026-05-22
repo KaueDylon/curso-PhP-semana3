@@ -29,6 +29,12 @@ class ContatoRepository
 
     }
 
+    public function deletarContatoPorId(int $id): void
+    {
+        $stmt = $this->PDO->prepare('UPDATE contatos SET status = false WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+    }
+
     public function adicionarNovoContato(CriarContatoModel $contato)
     {
         $stmt = $this->PDO->prepare(

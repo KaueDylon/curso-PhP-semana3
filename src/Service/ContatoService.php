@@ -44,7 +44,7 @@ class ContatoService
 //            return;
         }
 
-       $contato = $this->repository->buscarPorId($id); // FORMATAR O QUE VEM EM CONTRATO
+        $contato = $this->repository->buscarPorId($id); // FORMATAR O QUE VEM EM CONTRATO
 
         $telefonePuro = $contato['telefone'];
         $telefoneFormat = TelefoneRegex::formatarTelefone((string)$telefonePuro);
@@ -74,6 +74,22 @@ class ContatoService
 
         http_response_code(201);
         $this->repository->adicionarNovoContato($contato);
+    }
+
+    public function deletarContato(array $params): void
+    {
+        try {
+            $id = (int)($params['id']);
+
+            if($id == ''){
+                throw new \InvalidArgumentException();
+            }
+        }catch (\InvalidArgumentException $e){
+//            return;
+        }
+
+        $this->repository->deletarContatoPorId($id);
+
     }
 
 }
