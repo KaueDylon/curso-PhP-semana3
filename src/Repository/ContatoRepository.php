@@ -17,13 +17,13 @@ class ContatoRepository
 
     public function buscarTodos(): array
     {
-        $stmt = $this->PDO->query('SELECT * FROM contatos');
+        $stmt = $this->PDO->query('SELECT * FROM contatos WHERE status = TRUE');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function buscarPorId(int $id): array
     {
-        $stmt = $this->PDO->prepare('SELECT * FROM contatos WHERE id = :id');
+        $stmt = $this->PDO->prepare('SELECT * FROM contatos WHERE id = :id AND status = TRUE');
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
 
