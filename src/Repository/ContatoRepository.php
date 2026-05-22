@@ -21,6 +21,14 @@ class ContatoRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function buscarPorId(int $id): array
+    {
+        $stmt = $this->PDO->prepare('SELECT * FROM contatos WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    }
+
     public function adicionarNovoContato(CriarContatoModel $contato)
     {
         $stmt = $this->PDO->prepare(

@@ -24,5 +24,10 @@ class ContatoController
         $this->service->criarContato($body);
     }
 
+    public function usuarioPorId(array $params = []): array
+    {
+        return $this->service->listarPorId($params);
+    }
+
 
 }
