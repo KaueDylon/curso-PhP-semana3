@@ -12,3 +12,4 @@ $router->get('/usuario', [ContatoController::class, 'usuario']);
 $router->get('/usuario/{id}', [ContatoController::class, 'usuarioPorId']);
 $router->post('/usuario', [ContatoController::class, 'inserirUsuario']);
 $router->delete('/usuario/{id}', [ContatoController::class, 'deletarContatoPorId']);
+$router->put('/usuario/{id}', [ContatoController::class, 'editarContatoPorId']);

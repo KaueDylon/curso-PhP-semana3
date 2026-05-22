@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Model\CriarContatoModel;
+use App\Model\ContatoModel;
 use App\Repository\ContatoRepository;
 use App\Utils\TelefoneRegex;
 
@@ -70,7 +70,7 @@ class ContatoService
             return;
         }
 
-        $contato = new CriarContatoModel($nome, $email, $telefone) ;
+        $contato = new ContatoModel($nome, $email, $telefone) ;
 
         http_response_code(201);
         $this->repository->adicionarNovoContato($contato);
@@ -89,6 +89,31 @@ class ContatoService
         }
 
         $this->repository->deletarContatoPorId($id);
+
+    }
+
+    public function editarContato(array $params, array $body): void
+    {
+        try {
+            $id = (int)($params['id']);
+
+            if($id == ''){
+                throw new \InvalidArgumentException();
+            }
+        } catch (\InvalidArgumentException $e){
+//            return;
+        }
+
+        $contato = $this->repository->buscarPorId($id);
+
+        $contatoId = $contato['id'];
+        $contatoNome = $body['nome'];
+        $contatoEmail = $body['email'];
+        $contatoTelefone = (int)$body['telefone'];
+
+        $contatoEditar = new ContatoModel($contatoId, $contatoNome, $contatoEmail, $contatoTelefone);
+
+        $this->repository->editarContatoPorId($contatoEditar);
 
     }
 

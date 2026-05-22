@@ -34,5 +34,10 @@ class ContatoController
         $this->service->deletarContato($params);
     }
 
+    public function editarContatoPorId(array $params = [], array $body = []): void
+    {
+        $this->service->editarContato($params, $body);
+    }
+
 
 }

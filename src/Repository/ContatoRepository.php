@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Config\Database;
-use App\Model\CriarContatoModel;
+use App\Model\ContatoModel;
 use PDO;
 
 class ContatoRepository
@@ -33,9 +35,24 @@ class ContatoRepository
     {
         $stmt = $this->PDO->prepare('UPDATE contatos SET status = false WHERE id = :id');
         $stmt->execute([':id' => $id]);
+
+        http_response_code(204);
     }
 
-    public function adicionarNovoContato(CriarContatoModel $contato)
+    public function editarContatoPorId(ContatoModel $contato)
+    {
+        $stmt = $this->PDO->prepare('UPDATE contatos SET nome = :nome, email = :email, telefone = :telefone  WHERE id = :id');
+        $stmt->execute([':id' => $contato->getId(),
+                ':nome' => $contato->getNome(),
+                ':email' => $contato->getEmail(),
+                ':telefone' => $contato->getTelefone(),
+
+            ]);
+
+        http_response_code(204);
+    }
+
+    public function adicionarNovoContato(ContatoModel $contato)
     {
         $stmt = $this->PDO->prepare(
             "INSERT INTO contatos (nome, email, telefone) 
