@@ -118,7 +118,32 @@ class ContatoController
                 'sucesso' => false,
                 'info' => $e->getMessage()
             ];
-        }catch (RuntimeException $e){
+        }catch (\RuntimeException $e){
+            http_response_code(404);
+            return [
+                'sucesso' => false,
+                'info' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function restaurarContatoPorId(array $params = [], array $body = []): array
+    {
+        try {
+            $this->service->restaurarContato($params);
+
+            http_response_code(204);
+            return [
+                'sucesso' => true,
+                'info' => 'Contato foi restaurado com sucesso.'
+            ];
+        } catch (\InvalidArgumentException $e){
+            http_response_code(400);
+            return [
+                'sucesso' => false,
+                'info' => $e->getMessage()
+            ];
+        }catch (\RuntimeException $e){
             http_response_code(404);
             return [
                 'sucesso' => false,

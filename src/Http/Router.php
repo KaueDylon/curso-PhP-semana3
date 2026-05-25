@@ -19,6 +19,10 @@ class Router{
         $this->routes['PUT'][$path] = $handler;
     }
 
+    public function patch(string $path, array|callable $handler): void{
+        $this->routes['PATCH'][$path] = $handler;
+    }
+
     public function delete(string $path, array|callable $handler): void{
         $this->routes['DELETE'][$path] = $handler;
     }

@@ -30,9 +30,24 @@ class ContatoRepository
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+    public function buscarDeletadorPorId(int $id): ?array
+    {
+        $stmt = $this->PDO->prepare('SELECT * FROM contatos WHERE id = :id AND status = FALSE');
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
     public function deletarContatoPorId(int $id): void
     {
         $stmt = $this->PDO->prepare('UPDATE contatos SET status = false WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        http_response_code(204);
+    }
+
+    public function restaurarContatoPorId(int $id): void
+    {
+        $stmt = $this->PDO->prepare('UPDATE contatos SET status = true WHERE id = :id');
         $stmt->execute([':id' => $id]);
 
         http_response_code(204);

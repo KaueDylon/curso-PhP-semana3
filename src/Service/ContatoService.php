@@ -59,8 +59,8 @@ class ContatoService
             $email = $body['email'] ?? null;
             $telefone = $body['telefone'] ?? null;
 
-            if( (empty($nome)) ||(empty($email)) || (empty($telefone)) ){
-                throw new \InvalidArgumentException();
+            if( (empty($nome)) || (empty($email)) || (empty($telefone)) ){
+                throw new \InvalidArgumentException("Todos ou algum campo não foi preenchido corretamente.");
             }
 
         $contato = new ContatoModel($nome, $email, (int)$telefone) ;
@@ -79,11 +79,36 @@ class ContatoService
 
         $contato = $this->repository->buscarPorId($id);
 
-        if(!$contato){
+        if(!$contato || !$contato['status'] ){                                 # ARRUMAR ESSA EXCEÇÃO DEPOIS DO ALMOÇO !!!
             throw new \RuntimeException('Contato não existe para uma exclusão.');
         }
 
         $this->repository->deletarContatoPorId($id);
+
+    }
+
+
+    public function restaurarContato(array $params): void
+    {
+
+        $id = filter_var($params['id'] ?? null, FILTER_VALIDATE_INT);
+
+        if (!$id){
+            throw new \InvalidArgumentException('ID inválido para a exclusão');
+        }
+
+        $contato = $this->repository->buscarDeletadorPorId($id);
+
+        if(!$contato){
+            throw new \RuntimeException('Contato não existe para uma restauração.');
+        }
+
+        if($contato['status']){
+            throw new \RuntimeException('Contato já está ativo e não precisa ser restaurado.');
+        }
+
+
+        $this->repository->restaurarContatoPorId($id);
 
     }
 
