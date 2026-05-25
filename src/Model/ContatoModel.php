@@ -3,10 +3,10 @@
 namespace App\Model;
 class ContatoModel{
     public function __construct(
-        private ?int $id,
         private string $nome,
         private string $email,
-        private int $telefone
+        private int $telefone,
+        private ?int $id = null
     )
     {}
 

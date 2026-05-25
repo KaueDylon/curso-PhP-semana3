@@ -34,58 +34,53 @@ class ContatoService
 
     public function listarPorId(array $params): array
     {
-        try {
-            $id = (int)($params['id']);
+        $id = filter_var($params['id'] ?? null, FILTER_VALIDATE_INT);
 
-            if($id == ''){
-                throw new \InvalidArgumentException();
-            }
-        }catch (\InvalidArgumentException $e){
-//            return;
+        if(!$id){
+            throw new \InvalidArgumentException('ID inválido ou vázio');
         }
 
-        $contato = $this->repository->buscarPorId($id); // FORMATAR O QUE VEM EM CONTRATO
+        $contato = $this->repository->buscarPorId($id);
+
+        if (!$contato){
+            throw new \RuntimeException('Contato não foi encontrado');
+        }
 
         $telefonePuro = $contato['telefone'];
         $telefoneFormat = TelefoneRegex::formatarTelefone((string)$telefonePuro);
-
         $contato['telefone'] = $telefoneFormat;
 
-        http_response_code(200);
         return $contato;
     }
 
-    public function criarContato(array $body): void // ## ARRUMAR DEPOIS ##
+    public function criarContato(array $body): void
     {
-        try {
-            $nome = $body['nome'];
-            $email = $body['email'];
-            $telefone = $body['telefone'];
+            $nome = $body['nome'] ?? null;
+            $email = $body['email'] ?? null;
+            $telefone = $body['telefone'] ?? null;
 
-            if( (is_null($nome)) || (is_null($email)) || (is_null($telefone)) ){
+            if( (empty($nome)) ||(empty($email)) || (empty($telefone)) ){
                 throw new \InvalidArgumentException();
             }
 
-        }catch (\InvalidArgumentException $e){
-            return;
-        }
+        $contato = new ContatoModel($nome, $email, (int)$telefone) ;
 
-        $contato = new ContatoModel($nome, $email, $telefone) ;
-
-        http_response_code(201);
         $this->repository->adicionarNovoContato($contato);
     }
 
     public function deletarContato(array $params): void
     {
-        try {
-            $id = (int)($params['id']);
 
-            if($id == ''){
-                throw new \InvalidArgumentException();
-            }
-        }catch (\InvalidArgumentException $e){
-//            return;
+        $id = filter_var($params['id'] ?? null, FILTER_VALIDATE_INT);
+
+        if (!$id){
+            throw new \InvalidArgumentException('ID inválido para a exclusão');
+        }
+
+        $contato = $this->repository->buscarPorId($id);
+
+        if(!$contato){
+            throw new \RuntimeException('Contato não existe para uma exclusão.');
         }
 
         $this->repository->deletarContatoPorId($id);
@@ -94,24 +89,24 @@ class ContatoService
 
     public function editarContato(array $params, array $body): void
     {
-        try {
-            $id = (int)($params['id']);
 
-            if($id == ''){
-                throw new \InvalidArgumentException();
-            }
-        } catch (\InvalidArgumentException $e){
-//            return;
+        $id = filter_var($params['id'] ?? null, FILTER_VALIDATE_INT);
+
+        if(!$id){
+            throw new \InvalidArgumentException('ID inválido para a edição');
         }
 
-        $contato = $this->repository->buscarPorId($id);
+        $contatoExistente = $this->repository->buscarPorId($id);
 
-        $contatoId = $contato['id'];
-        $contatoNome = $body['nome'];
-        $contatoEmail = $body['email'];
-        $contatoTelefone = (int)$body['telefone'];
+        if(!$contatoExistente){
+            throw new \RuntimeException('Contato não foi encontrado para edição');
+        }
 
-        $contatoEditar = new ContatoModel($contatoId, $contatoNome, $contatoEmail, $contatoTelefone);
+        $contatoNome = $body['nome'] ?? $contatoExistente['nome'];
+        $contatoEmail = $body['email'] ?? $contatoExistente['email'];
+        $contatoTelefone = (int)$body['telefone'] ?? (int)$contatoExistente['telefone'];;
+
+        $contatoEditar = new ContatoModel($contatoNome, $contatoEmail, $contatoTelefone, $id);
 
         $this->repository->editarContatoPorId($contatoEditar);
 
