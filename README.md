@@ -89,16 +89,19 @@ composer install
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-DB_DSN=mysql:host=localhost;dbname=agenda;charset=utf8mb4
-DB_NAME=root
-DB_PASSWORD=sua_senha
+DB_DSN=mysql:host=localhost;dbname=contactapi;
+DB_NAME=(seu_usuario)
+DB_PASSWORD=(sua_senha)
 ```
 
 ---
 
-# Estrutura da tabela
+# Estrutura do Banco
 
 ```sql
+
+CREATE DATABASE contactapi;
+
 CREATE TABLE contatos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
